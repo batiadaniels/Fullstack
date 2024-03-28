@@ -1,0 +1,10 @@
+Pasos:
+1. Crear la carpeta 
+2. Abrir VS en la carpeta que creamos
+3. Crear una carpeta llamada backend y dentro un archivo llamado server.js
+4. Abrir la terminal 
+5. Ejecutar npm init para hacer el package.json 
+6. Crear el archivo .gitignore (Agregar node_modules, .env (tiene todo lo que son las contraseñas y eso no se debe subir al servidor))
+7. Instalar los paquetes que nos van a servir en ESTA APP (express, DotENV, Mongoose, Colors)
+8. Instalar nodemon (-D dependencia de desarrollo - paquetes que sirven cuando programas pero no se van a Instalar cuando se le entreguen al cliente). 
+9. Modificamos package.json y agrfamos los scripts
