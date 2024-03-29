@@ -10,3 +10,83 @@ Pasos:
 9. Modificamos package.json y agregamos los scripts
 10. Creamos el repo local con git init y agregamos los archivos y le damos commit (git init, git add ., git status, git commit -m "Commit inicial")
 
+//
+Autenticacion con jsonwebtoken  
+ JWT 
+ JSON Web Token es un estandar abierto que define una forma compacta y autónoma de transmitir información de forma segura entre las partes como un objeto JSON. Esta información se puede verificar y confiar porque esta firmada digitalmente. Los JWT se pueden firmar usando un secreto (con el algoritmo HMAC) o un par de claves públicas/prvivadas usando RCA/ECDSA.
+ Aunque los JWT se pueden cifrar para proporcionar también confidencialidad entre las partes, nos centraremos en los tokens firmados. Los tokens firmados pueden verificar la integridad de los reclamos contenido en ellos, mientras que los tokens encriptados ocultan esos reclamos de otas partes. Cuando los tokens se firman utilizando pares de claves pública/privada, la firma también certifica que solo la parte que posee la clave privada es la que firmó. 
+
+Cuando usar JWT?
+- Autorización: Este es el escenario más común para usar JWT. Una vez que el usuario haya iniciado sesión. cada solicitud posterior incluirá el JWT, lo que permitirá al usuario acceder a rutas, servicios y recursos permitidos con ese token. El inico de sesión único es una función que se usa ampliamente en JWT en la actualidad, debido a su pequeña sobrecarga y su capacidad para usarse fácilmente en diferentes dominios. 
+- Intercambio de información: Los tokens web JSON son una buena manera de transmitir información de forma segura entre las partes. Debido a que los JWT se pueden firmar, por ejemplo, utilizando pares de claves pública/prviada, puede estar seguro de que los remitenetes son quienes dicen ser. Además, como la firnma se calcula utilizando el encabezado y la carga útil, también puede verificar que el contenido no haya sido alterado. 
+
+Estructura de un JWT 
+En su forma compacta, los tokens web JSON constan de tres partes separadas por puntos (.), que son:
+- Header
+- Payload
+- Signature
+Por lo tanto un JWT normalmente tiene el siguiente aspecto: 
+xxxxx.yyyyy.zzzzz
+
+Encabezado: Header 
+Consta generalmente de dos partes: el tipo de token, que es JWT, y el algoritmo de firma que se utiliza, como HMAC SHA256 o RSA. 
+    Ejemplo:
+            {
+                "alg":"HS256",
+                "typ": "JWT"
+            }
+
+Carga util:Payload
+Contiene las reclamaciones y datos. Las reclamaciones son declaraciones sobre una entidad (normalmente el usuario) y dastos adicionales. Existem tres tipos de reclamaciones: registradas, publicas y privadas. 
+El playload se codifica con Base64Url para formar la segunda parte del token web JSON 
+    Ejemplo:
+            {
+                "sub": "1234567890"
+                "name": "Jhon Doe"
+                "admin": true
+            }
+
+Firma:Signature
+Para crear la parte de la firma, debe tomar el header codificado, el playload codificado, un secreto, el algortimo especificado en el encabebzado y firmarlo. 
+    Por ejemplo si desea utilizar el algoritmo HMAC SHA256 la firma se creara de la siguiente manera:
+            HMACSHA256(
+                base64UrlEncode(header) + "."
+                base64UrlEncode(payload),
+                secret
+            )
+La firma se usa para verificar que el mensaje no se modifico en el camino y en el caso de tokens firmados con una clave privada, tambien puede verificar el remitente del JWT es quien dice ser. 
+
+jwt.io - pagina que permite jugar y poner en practica estos conceptos.
+
+Como trabaja?
+En la autenticación, cuando el usuario inicia sesión correctamente con sus se devolvera un token web JSON. Dado que los tokens son credenciales, se debe tener mucho cuidado para evitar problemas de seguridad. En general, no debe conservar los tokens más tiempo del necesario.
+Tampoco debe almacenar datos de sesión confidenciales en el almacenamiento del navegador debido a la falta de seguridad.
+La cabecera autorization bearer es un tipo de header de una petición HTTP que carga con información relevante al tipo de usuario con el objetivo de darle autoridad para ejecutar la acción requerida en la petición.
+Cada vez que el usuario desee acceder a una ruta o recurso protegido, el agente de usuario debe enviar el WT, generalmente en el encabezado de Autorización utilizando el esquema "Bearer" que es una petición http. 
+El contenido del encabezado debe ser similar al siguiente:
+    Authorization: Bearer ‹token>
+
+Beneficios
+Hablemos de los beneficios de los tokens web JSON (JWT) en comparación con los tokens web simples (SWT) y los tokens de lenguaje de marcado de aserción de seguridad (SAML). Como JSON es menos detallado que XML, cuando está codificado, su tamaño también es mas pequeño, lo que hace que JWT sea mas compacto que SAML. Esto hace que WT sea una buena opción para pasar en entornos HTML y TTP.
+En cuanto a la seguridad, SWT solo puede firmarse simétricamente mediante un secreto compartido utilizando el algoritmo HMAC. Sin embargo, los tokens JWT y SAML pueden usar un par de claves pública/privada en forma de certificado X.509 para la firma. Firmar XML con XML Digital Signature sin introducir oscuros agujeros de seguridad es muy dificil en comparación con la simplicidad de firmar JSON.
+
+
+---------------------------------------------------------------
+
+Hash Passwords (bcryptsjs)
+
+Hash
+Una función criptográfica hash- usualmente conocida como "hash"- es un algoritmo matemático que transforma cualquier bloque arbitrario de datos en una nueva serie de caracteres con una longitud fija.
+Independientemente de la longitud de los datos de entrada, el valor hash de salida tendrá siempre la misma longitud.
+
+Almacenar las contraseñas en un sistema para validar usuarios es un punto realmente conflictivo. Obviamente es necesario conservar la información necesaria para validar que las credenciales introducidas son válidas, pero, sin guardar la contraseña en sí.
+Para que así en el caso de que una atacante logre robar los datos almacenados con la información de los usuarios no la pueda emplear para acceder al sistema.
+Este es el motivo por el que es recomendable conservar únicamente el hash criptográfico de la contraseña en lugar de esta. Algo que permite validar la contraseña, simplemente calculando su hash, sin la necesidad de tener esta disponible.
+Dado que es una operación no reversible, el atacante solamente podrá recuperar la contraseña mediante un ataque de fuerza bruta, probando contraseñas hasta que una genere el hash correspondiente.
+
+Sal y pimienta
+- Complicando el ataque mediante el uso de sal:
+    La sal no es más que una cadena de texto aleatoria para cada uno de los usuarios que se concatena a su contraseña antes de generar el hash. Así, aunque dos usuarios empleen exactamente la misma contraseña, el hash que aparecerá en la tabla será diferente.
+- Pimienta para aumentar aún más la complejidad:
+    Si el valor de la sal para cada uno de los usuarios fuese secreta, la complejidad del ataque aún sería mayor. Pero esto tiene problemas, ya que también complica el proceso de validación de los usuarios. Por eso es habitual recurrir a la pimienta (también conocida como sal secreta) para esto. Una cadena de texto, común para todos los usuarios, que también se agrega a la contraseña antes de obtener el hash. Pero en este caso es un valor que se almacena en una ubicación separada.
+

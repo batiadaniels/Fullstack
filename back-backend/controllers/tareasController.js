@@ -23,11 +23,35 @@ const postTareas = asyncHandler( async (req, res) => {
 })
 
 const  putTareas = asyncHandler ( async (req, res) =>{
-    res.status(200).json({ message: `Se modifico la tarea ${req.params.id}`})
+
+    const tarea = await Tarea.findById(req.params.id)
+
+    if (!tarea) {
+        res.status(400)
+        throw new Error ('La tarea no existe')
+    }
+
+    const updatedTarea = await Tarea.findByIdAndUpdate(req.params.id, req.body, {new:true})
+    
+    
+    res.status(200).json(updatedTarea)
 })
 
 const  deleteTareas = asyncHandler( async (req, res) =>{
-    res.status(200).json({ message: `Se elimino la tarea ${req.params.id}`})
+
+    const tarea = await Tarea.findById(req.params.id)
+
+    if (!tarea) {
+        res.status(400)
+        throw new Error ('La tarea no existe')
+    }
+
+    //Hay dos dormas de eliminar un registro en mongoose
+    //1.
+     await Tarea.deleteOne(tarea)     
+    //2. const deletedTarea = await Tarea.findByIdAndDelete(req.params.id)
+
+    res.status(200).json({ id: req.params.id})
 })
 
 
