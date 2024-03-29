@@ -7,4 +7,6 @@ Pasos:
 6. Crear el archivo .gitignore (Agregar node_modules, .env (tiene todo lo que son las contraseñas y eso no se debe subir al servidor))
 7. Instalar los paquetes que nos van a servir en ESTA APP (express, DotENV, Mongoose, Colors)
 8. Instalar nodemon (-D dependencia de desarrollo - paquetes que sirven cuando programas pero no se van a Instalar cuando se le entreguen al cliente). 
-9. Modificamos package.json y agrfamos los scripts
+9. Modificamos package.json y agregamos los scripts
+10. Creamos el repo local con git init y agregamos los archivos y le damos commit (git init, git add ., git status, git commit -m "Commit inicial")
+
