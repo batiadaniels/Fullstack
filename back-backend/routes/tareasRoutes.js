@@ -4,7 +4,7 @@ const {getTareas, postTareas, putTareas, deleteTareas} = require('../controllers
 const {protect} = require('../middleware/authMiddleware')
  
 //Obtener Tareas
-router.get('/',protect, getTareas)
+router.get('/', protect, getTareas)
 
 //Crear una Tarea
 router.post('/', protect, postTareas)
@@ -16,7 +16,7 @@ router.put('/:id', protect, putTareas)
 router.delete('/:id', protect, deleteTareas)
 
 //Otra opcion para escribir el codigo de arriba
-/*router.route('/').get(getTareas).post(postTareas)
-router.route('/:id').put(putTareas).delete(deleteTareas)*/
+/*router.route('/').get(protect, getTareas).post(protect, postTareas)
+router.route('/:id').put(protect, putTareas).delete(protect, deleteTareas)*/
 
 module.exports = router

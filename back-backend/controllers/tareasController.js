@@ -8,6 +8,7 @@ const getTareas = asyncHandler( async (req, res) => {
 })
 
 const postTareas = asyncHandler( async (req, res) => {
+
     if(!req.body.texto){
         res.status(400)
         throw new Error('No escribiste una descripcion');
@@ -27,15 +28,20 @@ const  putTareas = asyncHandler ( async (req, res) =>{
 
     const tarea = await Tarea.findById(req.params.id)
 
+    //verificamos que la tarea existe
     if (!tarea) {
         res.status(400)
         throw new Error ('La tarea no existe')
     }
 
-    const updatedTarea = await Tarea.findByIdAndUpdate(req.params.id, req.body, {new:true})
-    
-    
-    res.status(200).json(updatedTarea)
+    //verificamos que la tarea le pertenece al usuario
+    if (tarea.user.toString() !== req.user.id) {
+        res.status(401)
+        throw new Error ('Acceso no autorizado')
+    } else{
+        const updatedTarea = await Tarea.findByIdAndUpdate(req.params.id, req.body, {new:true})
+        res.status(200).json(updatedTarea)
+    } 
 })
 
 const  deleteTareas = asyncHandler( async (req, res) =>{
@@ -47,12 +53,18 @@ const  deleteTareas = asyncHandler( async (req, res) =>{
         throw new Error ('La tarea no existe')
     }
 
-    //Hay dos dormas de eliminar un registro en mongoose
+    //verificamos que la tarea le pertenece al usuario
+    if (tarea.user.toString() !== req.user.id) {
+        res.status(401)
+        throw new Error ('Acceso no autorizado')
+    } else{
+         //Hay dos dormas de eliminar un registro en mongoose
     //1.
      await Tarea.deleteOne(tarea)     
-    //2. const deletedTarea = await Tarea.findByIdAndDelete(req.params.id)
-
-    res.status(200).json({ id: req.params.id})
+     //2. const deletedTarea = await Tarea.findByIdAndDelete(req.params.id)
+ 
+     res.status(200).json({ id: req.params.id})
+    }  
 })
 
 
