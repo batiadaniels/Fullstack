@@ -17,8 +17,17 @@ const protect = asyncHandler(async (req,res,next) => {
 
             //Obtener datos del usuario
             req.user = await User.findById(decoded.id).select('-password')
+        } catch (error) {
+            console.error(error);
+            return res.status(401).send({ error: 'Acceso no autorizado' });
+        }
+    }
 
-        }catch (error) {
+    if (!token) {
+        return res.status(401).send({ error: 'Acceso no autorizado, no se proporcionó ningún token' });
+    }
+    
+       /* }catch (error) {
             console.log(error)
             res.status(401)
             throw new Error ("Acceso no autorizado")
@@ -29,8 +38,9 @@ const protect = asyncHandler(async (req,res,next) => {
     if(!token){
         res.status(401)
         throw new Error ("Acceso no autorizado, no se proporciono ningun token")
-    }
+    }*/
 
+    next() // Llama a la siguiente función de middleware en Express
 })
 
 

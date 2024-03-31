@@ -58,7 +58,7 @@ const  deleteTareas = asyncHandler( async (req, res) =>{
         res.status(401)
         throw new Error ('Acceso no autorizado')
     } else{
-         //Hay dos dormas de eliminar un registro en mongoose
+    //Hay dos dormas de eliminar un registro en mongoose
     //1.
      await Tarea.deleteOne(tarea)     
      //2. const deletedTarea = await Tarea.findByIdAndDelete(req.params.id)
