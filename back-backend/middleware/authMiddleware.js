@@ -47,4 +47,4 @@ const protect = asyncHandler(async (req,res,next) => {
 module.exports = { protect }
 
 0, 1
-//[Bearer, xxx.yyy.zzz]
+//[Bearer, xxx.yyy.zzz] 
